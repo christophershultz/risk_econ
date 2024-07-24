@@ -28,6 +28,9 @@ def addSingles(df):
     
     for file in files: 
         sub = pd.read_csv(file)
+        if 'fertilizer' in file: 
+            sub['keep'] = [1 if 'TOTAL' in i else 0 for i in sub['Domain Category']]
+            sub = sub[sub['keep'] == 1].drop(columns = ['keep']).reset_index(drop = True)
         sub = sub[~sub['County ANSI'].isna()].reset_index(drop = True)
         for col in ['Year', 'State ANSI', 'County ANSI']: 
             df[col] = [int(i) for i in df[col]]
@@ -36,8 +39,6 @@ def addSingles(df):
         keeps = ['key', 'Value']
         sub = sub[keeps]
         sub.columns = ['key', name]
-        if len(set(sub['key'])) < len(sub): 
-            pdb.set_trace()
         df = pd.merge(df, sub, how = 'left', on = 'key')
     return df
 
@@ -59,8 +60,6 @@ def addDoubles(df):
             keeps = ['key', 'Value']
             sub2 = sub2[keeps]
             sub2.columns = ['key', name]
-            if len(set(sub2['key'])) < len(sub2): 
-                pdb.set_trace()
             df = pd.merge(df, sub2, how = 'left', on = 'key')
     return df
 
@@ -86,6 +85,20 @@ def main():
         df[col] = [float(str(i).replace(',', '')) for i in df[col]]
 
     # Derived Variables
-    pdb.set_trace()
+    df['animal_expense_div_by_animal_sales'] = df['animal_expense_usd'] / df['animal_sales_usd']
+    df['pct_animal_sales'] = df['animal_sales_usd'] / df['sales_usd']
+    df['pct_crop_sales'] = df['crop_sales_usd'] / df['sales_usd']
+    df['pct_acres_insured'] = df['cropland_insured_acres'] / df['total_land_area_acres']
+    df['pct_sales_ccc_loans'] = df['ccc_loan_receipts_usd'] / df['sales_usd']
+    df['pct_acres_irrigated'] = df['irrigated_acres'] / df['total_land_area_acres'] 
+    df['pct_acres_fertilized'] = df['fertilizer_treated_acres'] / df['total_land_area_acres']
+    df['pct_acres_conserved'] = df['conservation_acres'] / df['total_land_area_acres'] 
+    df['pct_acres_operated'] = df['operated_acres'] / df['total_land_area_acres'] 
+    df['pct_operations_with_sales'] = df['operations_w_sales'] / df['num_operations']
+    df['pct_ops_w_gov_programs'] = df['operations_w_gov_programs'] / df['num_operations']
+    df['expense_ratio'] = df['expenses_usd'] / df['sales_usd']
+    df['expenses_div_net_income'] = df['expenses_usd'] / df['net_income_usd']
+
+    df.to_csv('C://Users//cshul//Desktop//risk_econ//ag_anomaly_county//prepared_data.csv', index = None)
 
 main()

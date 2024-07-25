@@ -89,6 +89,7 @@ def main():
     df['pct_animal_sales'] = df['animal_sales_usd'] / df['sales_usd']
     df['pct_crop_sales'] = df['crop_sales_usd'] / df['sales_usd']
     df['pct_acres_insured'] = df['cropland_insured_acres'] / df['total_land_area_acres']
+    df['ccc_loan_receipts_usd'] = [0 if str(i).lower() == 'nan' else i for i in df['ccc_loan_receipts_usd']]
     df['pct_sales_ccc_loans'] = df['ccc_loan_receipts_usd'] / df['sales_usd']
     df['pct_acres_irrigated'] = df['irrigated_acres'] / df['total_land_area_acres'] 
     df['pct_acres_fertilized'] = df['fertilizer_treated_acres'] / df['total_land_area_acres']

@@ -66,29 +66,29 @@ def recompute_stability(su, df):
 
 def main(): 
     df = pd.read_csv(path)
-    study_region = 'North Carolina'
     df['keeps'] = [1 if (i[-4:] == '----' and i[:2] != '--') else 0 for i in df['naics']]
     df = df[df['keeps'] == 1].reset_index(drop = True)
 
-    nc = df[df['state'] == study_region].reset_index(drop = True)
-    nc = nc[nc['keeps'] == 1].reset_index(drop = True)
+    res = {} 
+    for region in set(df['state']): 
+        su = df[df['state'] == region].reset_index(drop = True)
 
-    # Compute LQ
-    nc = compute_lq(nc, df)
+        # Compute LQ
+        su = compute_lq(su, df)
 
-    # Compute Adj LQ
-    nc = compute_adj_lq(nc, df)
-    
-    # Compute Stability Measure
-    nc = compute_stability(nc, df)
+        # Compute Adj LQ
+        su = compute_adj_lq(su, df)
+        
+        # Compute Stability Measure
+        su = compute_stability(su, df)
 
-    # Compute Cred-Theory-Adj LQ
-    nc = cred_theory(nc, df)
+        # Compute Cred-Theory-Adj LQ
+        su = cred_theory(su, df)
 
-    # Recompute Stability Measure
-    nc = recompute_stability(nc, df)
+        # Recompute Stability Measure
+        su = recompute_stability(su, df)
 
-    pdb.set_trace()
+        pdb.set_trace()
 
 
 main()

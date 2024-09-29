@@ -52,7 +52,10 @@ def get_vhm(df):
     return df
 
 def main(): 
-    df = pd.read_excel(path + 'lq_paper_us_county_2017.xlsx')
+    df = pd.read_excel(path + 'lq_paper_maine_data_2017_upd.xlsx')
+    df = df.rename(columns={'ESTAB_IND': 'ESTAB_C', 'ESTAB_TOTAL': 'ESTAB_TOTAL_C'})
+    df = df.rename(columns={'Maine.Technology.Cluster': 'NAICS'})
+
     df = get_lq(df)
     df = get_lq_new(df)
     df = get_diff_sq(df)
